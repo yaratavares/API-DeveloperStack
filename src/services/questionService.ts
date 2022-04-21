@@ -32,4 +32,17 @@ async function createNewAnswer(
   await answerRepository.create({ questionId, userId, answer });
 }
 
-export default { createQuestionAndTags, createNewAnswer };
+async function findOneQuestion(id: number) {
+  return questionRepository.findOne(id);
+}
+
+async function findAllQuestions() {
+  return questionRepository.findAll();
+}
+
+export default {
+  createQuestionAndTags,
+  createNewAnswer,
+  findOneQuestion,
+  findAllQuestions,
+};

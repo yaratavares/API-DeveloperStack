@@ -15,4 +15,73 @@ function findById(id: number) {
   return client.question.findFirst({ where: { id } });
 }
 
-export default { create, findById };
+function findOne(id: number) {
+  return client.question.findUnique({
+    select: {
+      id: true,
+      question: true,
+      user: {
+        select: {
+          email: true,
+        },
+      },
+      answers: {
+        select: {
+          answer: true,
+          user: {
+            select: {
+              email: true,
+            },
+          },
+        },
+      },
+      tags: {
+        select: {
+          tag: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+    },
+    where: {
+      id,
+    },
+  });
+}
+
+function findAll() {
+  return client.question.findMany({
+    select: {
+      id: true,
+      question: true,
+      user: {
+        select: {
+          email: true,
+        },
+      },
+      answers: {
+        select: {
+          answer: true,
+          user: {
+            select: {
+              email: true,
+            },
+          },
+        },
+      },
+      tags: {
+        select: {
+          tag: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+    },
+  });
+}
+
+export default { create, findById, findOne, findAll };
