@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { User } from "@prisma/client";
 
-import * as authService from "../services/authService.js";
+import authService from "../services/authService.js";
 
 export async function signUp(req: Request, res: Response) {
   const user: User = req.body;

@@ -3,9 +3,10 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 import * as authRepository from "../repositories/authRepositoriy.js";
+import * as sessionRepository from "../repositories/sessionRepository.js";
 import { conflict, notFound, unauthorized } from "../utils/errorUtils.js";
 
-export async function insertNewUser(newUser: User) {
+async function insertNewUser(newUser: User) {
   const user = await authRepository.findByEmail(newUser.email);
 
   if (user) {
@@ -19,7 +20,7 @@ export async function insertNewUser(newUser: User) {
   await authRepository.insert(userObject);
 }
 
-export async function createSession(logUser: User) {
+async function createSession(logUser: User) {
   const user = await authRepository.findByEmail(logUser.email);
 
   if (!user) {
@@ -30,7 +31,7 @@ export async function createSession(logUser: User) {
     throw unauthorized();
   }
 
-  const session = await authRepository.findSession(user.id);
+  const session = await sessionRepository.findByUserId(user.id);
 
   if (session) {
     return session.token;
@@ -39,7 +40,19 @@ export async function createSession(logUser: User) {
   const secretKey = process.env.JWT_SECRET;
   const token = jwt.sign(user.email, secretKey);
 
-  await authRepository.createSession({ userId: user.id, token });
+  await sessionRepository.create({ userId: user.id, token });
 
   return token;
 }
+
+export async function verifyToken(token: string) {
+  const session = await sessionRepository.findByToken(token);
+
+  if (!session) {
+    throw unauthorized();
+  }
+
+  return session.userId;
+}
+
+export default { createSession, insertNewUser };
