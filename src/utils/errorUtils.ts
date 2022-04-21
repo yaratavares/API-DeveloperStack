@@ -17,3 +17,5 @@ export function badRequest(): AppError {
 export function unauthorized(): AppError {
   return { type: "unauthorized" };
 }
+
+export default { notFound, conflict, badRequest, unauthorized };

@@ -2,15 +2,15 @@ import { User } from "@prisma/client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-import * as authRepository from "../repositories/authRepositoriy.js";
-import * as sessionRepository from "../repositories/sessionRepository.js";
-import { conflict, notFound, unauthorized } from "../utils/errorUtils.js";
+import authRepository from "../repositories/authRepositoriy.js";
+import sessionRepository from "../repositories/sessionRepository.js";
+import errors from "../utils/errorUtils.js";
 
 async function insertNewUser(newUser: User) {
   const user = await authRepository.findByEmail(newUser.email);
 
   if (user) {
-    throw conflict();
+    throw errors.conflict();
   }
 
   const passwordHash = bcrypt.hashSync(newUser.password, 10);
@@ -24,11 +24,11 @@ async function createSession(logUser: User) {
   const user = await authRepository.findByEmail(logUser.email);
 
   if (!user) {
-    throw notFound();
+    throw errors.notFound();
   }
 
   if (!bcrypt.compareSync(logUser.password, user.password)) {
-    throw unauthorized();
+    throw errors.unauthorized();
   }
 
   const session = await sessionRepository.findByUserId(user.id);
@@ -49,7 +49,7 @@ export async function verifyToken(token: string) {
   const session = await sessionRepository.findByToken(token);
 
   if (!session) {
-    throw unauthorized();
+    throw errors.unauthorized();
   }
 
   return session.userId;

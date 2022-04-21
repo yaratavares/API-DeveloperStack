@@ -64,7 +64,7 @@ model TagsQuestions {
 
 model Tags {
   id        Int             @id @default(autoincrement())
-  name      String
+  name      String          @unique
   questions TagsQuestions[]
 
   @@map("tags")
