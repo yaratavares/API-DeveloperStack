@@ -18,6 +18,10 @@ export function errorHandlerMiddleware(
       return res.sendStatus(400);
     }
 
+    if (error.type === "unauthorized") {
+      return res.sendStatus(401);
+    }
+
     if (error.type === "conflict") {
       return res.sendStatus(409);
     }

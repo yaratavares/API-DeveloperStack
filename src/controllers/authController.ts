@@ -12,5 +12,17 @@ export async function signUp(req: Request, res: Response) {
 
   await authService.insertNewUser(user);
 
-  res.sendStatus(200);
+  res.sendStatus(201);
+}
+
+export async function signIn(req: Request, res: Response) {
+  const user: User = req.body;
+
+  if (!user.email || !user.password) {
+    res.sendStatus(422);
+  }
+
+  const token = await authService.createSession(user);
+
+  res.send(token);
 }

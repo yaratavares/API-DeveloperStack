@@ -16,8 +16,18 @@ model User {
   password  String
   questions Question[]
   answers   Answer[]
+  sessions  Session[]
 
   @@map("users")
+}
+
+model Session {
+  user   User   @relation(fields: [userId], references: [id])
+  userId Int
+  token  String
+
+  @@id([userId, token])
+  @@map("sessions")
 }
 
 model Question {

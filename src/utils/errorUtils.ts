@@ -1,5 +1,5 @@
 export interface AppError {
-  type: "not_found" | "bad_request" | "conflict";
+  type: "not_found" | "bad_request" | "conflict" | "unauthorized";
 }
 
 export function notFound(): AppError {
@@ -12,4 +12,8 @@ export function conflict(): AppError {
 
 export function badRequest(): AppError {
   return { type: "bad_request" };
+}
+
+export function unauthorized(): AppError {
+  return { type: "unauthorized" };
 }
