@@ -4,11 +4,19 @@ import client from "../database.js";
 type DataQuestion = Omit<Question, "id">;
 
 async function create(dataQuestion: DataQuestion, tag: string) {
-  const { id: idQ } = await client.question.create({ data: dataQuestion });
-
-  const { id: idT } = await client.tags.create({ data: { name: tag } });
-
-  await client.tagsQuestions.create({ data: { questionId: idQ, tagId: idT } });
+  await client.tagsQuestions.create({
+    data: {
+      question: {
+        create: {
+          question: dataQuestion.question,
+          userId: dataQuestion.userId,
+        },
+      },
+      tag: {
+        create: { name: tag },
+      },
+    },
+  });
 }
 
 function findById(id: number) {
@@ -78,6 +86,11 @@ function findAll() {
               name: true,
             },
           },
+        },
+      },
+      _count: {
+        select: {
+          answers: true,
         },
       },
     },
